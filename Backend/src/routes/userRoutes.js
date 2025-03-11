@@ -17,7 +17,7 @@ import { authenticate, authorizeAdmin } from "../middlewares/authMiddleWare.js";
 const router = express.Router();
 
 router.route("/register").post(createUser);
-router.post("/", loginUser);
+router.post("/login", loginUser);
 router.post("/login-google", loginGoogleUser);
 router.post("/logout", logoutCurrentUser);
 router

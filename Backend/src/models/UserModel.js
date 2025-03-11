@@ -26,6 +26,15 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    googleId: {
+      type: String,
+    },
+    githubId: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
   },
   { timestamps: true }
 );
