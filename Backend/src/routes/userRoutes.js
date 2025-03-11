@@ -43,7 +43,9 @@ router.get(
     createToken(res, req.user._id);
 
     // Tạo URL với thông tin người dùng để frontend có thể lưu vào Redux
-    const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
+    const frontendURL =
+      process.env.FRONTEND_URL || "https://kanbantask.vercel.app/";
+    // const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
 
     // Chuyển thông tin người dùng dưới dạng query parameter
     // Lưu ý: Trong thực tế, bạn có thể muốn hạn chế thông tin được truyền qua URL
