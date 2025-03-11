@@ -39,29 +39,21 @@ router.get(
   "/auth/google/callback",
   passport.authenticate("google", { failureRedirect: "/login" }),
   (req, res) => {
-    // Tạo JWT sau khi xác thực thành công
-    createToken(res, req.user._id);
+    if (!req.user) {
+      return res.status(401).json({ error: "Login failed" });
+    }
 
-    // Tạo URL với thông tin người dùng để frontend có thể lưu vào Redux
-    const frontendURL =
-      process.env.FRONTEND_URL || "https://kanbantask.vercel.app";
-    // const frontendURL = process.env.FRONTEND_URL || "http://localhost:5173";
-
-    // Chuyển thông tin người dùng dưới dạng query parameter
-    // Lưu ý: Trong thực tế, bạn có thể muốn hạn chế thông tin được truyền qua URL
-    const userInfo = encodeURIComponent(
-      JSON.stringify({
+    // Gửi JSON thay vì redirect
+    res.json({
+      userInfo: {
         _id: req.user._id,
         name: req.user.name,
         email: req.user.email,
-        // Thêm các thông tin cần thiết khác
-      })
-    );
-
-    // Redirect đến trang frontend với thông tin người dùng
-    res.redirect(`${frontendURL}/auth/success?userInfo=${userInfo}`);
+      },
+    });
   }
 );
+
 // Route for admin to manage users
 
 router
