@@ -2,6 +2,8 @@ import User from "../models/UserModel.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import createToken from "../utils/createToken.js";
+import axios from "axios";
+import { oauth2Client } from "../utils/googleClient.js";
 
 const createUser = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -110,6 +112,56 @@ const loginGoogleUser = asyncHandler(async (req, res) => {
     throw new Error("Server error during Google login: " + error.message);
   }
 });
+
+// const loginGoogleUser = asyncHandler(async (req, res) => {
+//   const code = req.query.code;
+
+//   try {
+//     const googleRes = await oauth2Client.getToken(code);
+//     oauth2Client.setCredentials(googleRes.tokens);
+//     const userRes = await axios.get(
+//       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${googleRes.tokens.access_token}`
+//     );
+//     const { email, name, picture } = userRes.data;
+
+//     // Kiểm tra email đã được xác minh
+//     if (!userRes.data.verified_email) {
+//       return res.status(400).json({ message: "Email chưa được xác minh" });
+//     }
+
+//     let user = await User.findOne({ email });
+//     const username = name || email.split("@")[0]; // Tạo username từ name hoặc email
+
+//     if (!user) {
+//       user = await User.create({
+//         username,
+//         email,
+//         image: picture,
+//         isGoogleUser: true,
+//       });
+//     }
+
+//     // Tạo token
+//     const token = createToken(res, user._id);
+
+//     res.status(200).json({
+//       message: "success",
+//       token,
+//       user: {
+//         _id: user._id,
+//         username: user.username,
+//         email: user.email,
+//         image: user.image,
+//       },
+//     });
+//   } catch (err) {
+//     console.error("Google login error:", err);
+//     res.status(500).json({
+//       message: "Internal Server Error",
+//       error: process.env.NODE_ENV === "development" ? err.message : undefined,
+//     });
+//   }
+// });
 
 const logoutCurrentUser = asyncHandler(async (req, res) => {
   try {
